@@ -54,6 +54,10 @@ pub struct Flags {
     /// If set, the regex is interpreted as a UnicodeSets regex.
     /// Equivalent to the 'v' flag in JavaScript.
     pub unicode_sets: bool,
+
+    /// If set, spaces are ignored.
+    /// Equivalent to the 'x' flag in ActionScript/PCRE.
+    pub extended: bool,
 }
 
 impl Flags {
@@ -80,6 +84,9 @@ impl Flags {
                 }
                 'v' => {
                     result.unicode_sets = true;
+                }
+                'x' => {
+                    result.extended = true;
                 }
                 _ => {
                     // Silently skip unsupported flags.

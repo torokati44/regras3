@@ -687,12 +687,14 @@ where
 
                 // Term :: Atom :: PatternCharacter
                 // Term :: ExtendedAtom :: ExtendedPatternCharacter
-                _ => {
-                    self.consume(c);
-                    result.push(ir::Node::Char {
-                        c: self.fold_if_icase(c),
-                        icase: self.flags.icase,
-                    })
+                chr => {
+                    self.consume(chr);
+                    if !self.flags.extended || !chr.is_ascii_whitespace() {
+                        result.push(ir::Node::Char {
+                            c: self.fold_if_icase(c),
+                            icase: self.flags.icase,
+                        })
+                    }
                 }
             }
 
