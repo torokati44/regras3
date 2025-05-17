@@ -601,6 +601,17 @@ where
                     } else if self.try_consume_str("(?:") {
                         // Non-capturing group.
                         result.push(self.consume_disjunction()?);
+                    } else if self.try_consume_str("(?#") {
+                        // PCRE Comment
+                        loop {
+                            match self.peek().map(to_char_sat) {
+                                None | Some(')') => break,
+                                Some(c) => {
+                                    self.consume(c);
+                                    continue;
+                                }
+                            }
+                        }
                     } else if let Some(group) = self.try_consume_modifier_group()? {
                         result.push(group);
                     } else {
@@ -1844,6 +1855,10 @@ where
                     }
                 },
                 Some('(') => {
+                    if self.try_consume('#') {
+                        continue;
+                    }
+
                     if self.try_consume_str("?")
                         && let Some(name) = self.try_consume_named_capture_group_name()
                         && self
